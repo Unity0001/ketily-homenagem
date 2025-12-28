@@ -4,26 +4,28 @@ const bgMusic = document.getElementById("bg-music");
 let index = 0;
 let musicaIniciada = false;
 
-window.addEventListener("load", () => {
-  if (!bgMusic) return;
-
-  bgMusic
-    .play()
-    .then(() => {
-      musicaIniciada = true;
-    })
-    .catch(() => {});
-});
-
-function liberarAudio() {
+function iniciarMusica() {
   if (!musicaIniciada && bgMusic) {
     bgMusic.play().catch(() => {});
     musicaIniciada = true;
   }
 }
 
-document.addEventListener("click", liberarAudio, { once: true });
-document.addEventListener("touchstart", liberarAudio, { once: true });
+window.addEventListener("load", () => {
+  iniciarMusica();
+});
+
+document.addEventListener("click", iniciarMusica, { once: true });
+document.addEventListener("touchstart", iniciarMusica, { once: true });
+
+const ultimoItem = items[items.length - 1];
+const video = ultimoItem.querySelector("video");
+
+if (video) {
+  video.muted = true;
+  video.controls = false;
+  video.style.pointerEvents = "none";
+}
 
 const interval = setInterval(() => {
   items[index].classList.remove("active");
@@ -44,8 +46,10 @@ const interval = setInterval(() => {
       bgMusic.currentTime = 0;
     }
 
-    const video = items[index].querySelector("video");
     if (video) {
+      video.muted = false;
+      video.controls = true;
+      video.style.pointerEvents = "auto";
       video.play().catch(() => {});
     }
   }
