@@ -2,30 +2,46 @@ const items = document.querySelectorAll(".carousel-item");
 const bgMusic = document.getElementById("bg-music");
 
 let index = 0;
-let musicaIniciada = false;
-
-function iniciarMusica() {
-  if (!musicaIniciada && bgMusic) {
-    bgMusic.play().catch(() => {});
-    musicaIniciada = true;
-  }
-}
-
-window.addEventListener("load", () => {
-  iniciarMusica();
-});
-
-document.addEventListener("click", iniciarMusica, { once: true });
-document.addEventListener("touchstart", iniciarMusica, { once: true });
+let musicaLiberada = false;
 
 const ultimoItem = items[items.length - 1];
 const video = ultimoItem.querySelector("video");
 
 if (video) {
+  video.pause();
   video.muted = true;
   video.controls = false;
   video.style.pointerEvents = "none";
 }
+
+function tocarMusica() {
+  if (!bgMusic || musicaLiberada) return;
+
+  bgMusic
+    .play()
+    .then(() => {
+      musicaLiberada = true;
+    })
+    .catch(() => {});
+}
+
+window.addEventListener("load", tocarMusica);
+
+document.addEventListener(
+  "touchstart",
+  () => {
+    tocarMusica();
+  },
+  { once: true }
+);
+
+document.addEventListener(
+  "click",
+  () => {
+    tocarMusica();
+  },
+  { once: true }
+);
 
 const interval = setInterval(() => {
   items[index].classList.remove("active");
